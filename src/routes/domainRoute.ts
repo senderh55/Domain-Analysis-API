@@ -2,7 +2,7 @@ import express from "express";
 import {
   domainValidationRules,
   validateDomain,
-} from "../middlewares/domainValidation";
+} from "../middlewares/domainValidationMiddleware";
 const router = express.Router();
 const domainController = require("../controllers/domainController");
 

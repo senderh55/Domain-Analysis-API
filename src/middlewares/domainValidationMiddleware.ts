@@ -1,6 +1,6 @@
 import { body, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
-const DomainModel = require("./DomainModel");
+const DomainModel = require("../models/DomainModel");
 
 export const domainValidationRules = [
   body("domain")

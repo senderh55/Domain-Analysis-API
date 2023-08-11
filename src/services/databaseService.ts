@@ -1,5 +1,6 @@
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+import RequestLogModel from "../models/RequestLogModel"; // Adjust path to your Request Log model
 
 dotenv.config();
 mongoose.connect(`${process.env.MONGODB_URI}`, { useNewUrlParser: true });
@@ -11,3 +12,8 @@ db.once("open", function () {
 });
 
 export default { db };
+
+export const logRequest = async (request: object) => {
+  const requestLog = new RequestLogModel(request);
+  await requestLog.save();
+};
