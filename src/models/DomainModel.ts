@@ -7,7 +7,7 @@ export interface IDomain extends Document {
 }
 
 const domainSchema: Schema = new Schema({
-  name: { type: String, required: true },
+  domain: { type: String, required: true },
   virusTotalInfo: { type: Object, required: false },
   whoisInfo: { type: Object, required: false },
 });

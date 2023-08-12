@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(helmet()); // Helmet for security
-app.use("/api", domainRouter);
+app.use(domainRouter);
 app.use(logRequestMiddleware);
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

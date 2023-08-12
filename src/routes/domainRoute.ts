@@ -4,14 +4,10 @@ import {
   validateDomain,
 } from "../middlewares/domainValidationMiddleware";
 const router = express.Router();
-const domainController = require("../controllers/domainController");
+import * as domainController from "../controllers/domainController";
 
-router.get("/domain/:name", domainController.getDomainInfo);
-router.post(
-  "/domain",
-  domainValidationRules,
-  validateDomain,
-  domainController.addDomainForAnalysis
-);
+// FIXME: add auth middlewares to routes
+router.get("/domainAnalysis/:name", domainController.getDomainInfo);
+router.post("/domainAnalysis", domainController.addDomainForAnalysis);
 
 module.exports = router;

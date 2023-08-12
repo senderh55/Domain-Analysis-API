@@ -1,6 +1,6 @@
 const schedule = require("node-schedule");
-import { analyzeDomain } from "./analysisService"; // Update path if needed
-import Domain, { IDomain } from "../models/DomainModel"; // Update path if needed
+import { analyzeDomain } from "./analysisService";
+import Domain, { IDomain } from "../models/DomainModel";
 
 export const startDomainAnalysisScheduler = () => {
   // Schedule the job to run at a specific interval, e.g., once a month
