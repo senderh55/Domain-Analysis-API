@@ -1,5 +1,7 @@
 const express = require("express");
 const domainRouter = require("./routes/domainRoute");
+import { startConsumer } from "./controllers/domainController";
+
 const {
   startDomainAnalysisScheduler,
 } = require("./services/schedulingService");
@@ -20,4 +22,8 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-startDomainAnalysisScheduler(); // Start scheduler for domain analysis
+// Start the consumer
+startConsumer();
+
+// Start the scheduler
+startDomainAnalysisScheduler();

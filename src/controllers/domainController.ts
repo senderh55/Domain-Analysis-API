@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { analyzeDomain } from "../services/analysisService";
 import Domain, { IDomain } from "../models/DomainModel";
+import { connectToRabbitMQ } from "../utils/rabbitmq";
 
 const getKeysToIterate = (): (keyof IDomain)[] => {
   const domainKeys = Object.keys(Domain.schema.paths) as (keyof IDomain)[];
@@ -36,7 +37,7 @@ async function createNewDomainAndSendResponse(
 ): Promise<void> {
   try {
     const analysis = await analyzeDomain(domainName);
-    const newDomain = new Domain({ domainName, ...analysis }); // Make sure to include all required fields here
+    const newDomain = new Domain({ domainName, ...analysis });
     await newDomain.save();
     res
       .status(202)
@@ -81,4 +82,21 @@ export const getDomainInfo = async (req: Request, res: Response) => {
     return;
   }
   res.json(domainInfo);
+};
+
+export const startConsumer = async () => {
+  const channel = await connectToRabbitMQ();
+  await channel.assertQueue("domain-analysis");
+
+  channel.consume(
+    "domain-analysis",
+    async (msg: { content: { toString: () => string } }) => {
+      if (msg) {
+        const { domainName } = JSON.parse(msg.content.toString());
+        const analysis = await analyzeDomain(domainName);
+        await Domain.updateOne({ domainName }, { ...analysis });
+        channel.ack(msg);
+      }
+    }
+  );
 };
