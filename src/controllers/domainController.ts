@@ -77,6 +77,14 @@ export const getDomainInfo = async (req: Request, res: Response) => {
     await createNewDomainAndSendResponse(domainName, res);
     return;
   }
+  if (domainInfo.status === "pending") {
+    res
+      .status(202)
+      .json({
+        message: "Analysis is currently being scanned. Check back later.",
+      });
+    return;
+  }
   if (requiresUpdate(domainInfo)) {
     await updateDomainAndSendResponse(domainName, res);
     return;
@@ -93,8 +101,12 @@ export const startConsumer = async () => {
     async (msg: { content: { toString: () => string } }) => {
       if (msg) {
         const { domainName } = JSON.parse(msg.content.toString());
+        await Domain.updateOne({ domainName }, { status: "pending" }); // Set status as 'pending'
         const analysis = await analyzeDomain(domainName);
-        await Domain.updateOne({ domainName }, { ...analysis });
+        await Domain.updateOne(
+          { domainName },
+          { ...analysis, status: "completed" }
+        ); // Update status back to 'completed'
         channel.ack(msg);
       }
     }
