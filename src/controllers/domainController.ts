@@ -87,7 +87,7 @@ export const getDomainInfo = async (req: Request, res: Response) => {
 export const startConsumer = async () => {
   const channel = await connectToRabbitMQ();
   await channel.assertQueue("domain-analysis");
-
+  console.log("Consumer started");
   channel.consume(
     "domain-analysis",
     async (msg: { content: { toString: () => string } }) => {

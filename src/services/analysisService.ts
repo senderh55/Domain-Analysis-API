@@ -28,7 +28,6 @@ const fetchWhoisInfo = async (domain: string): Promise<object> => {
 
   try {
     const response = await axios.get(url);
-    console.log(response);
     return response.data.WhoisRecord; // The structure might already match the WhoisInfo interface
   } catch (error) {
     throw new Error("Failed to fetch Whois info");
