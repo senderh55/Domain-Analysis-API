@@ -67,7 +67,10 @@ export const addDomainForAnalysis = async (req: Request, res: Response) => {
       });
     }
     const analysis = await analyzeDomain(validatedDomainName);
-    const newDomain = new Domain({ validatedDomainName, ...analysis });
+    const newDomain = new Domain({
+      domainName: validatedDomainName,
+      ...analysis,
+    });
     await newDomain.save();
     res.json({ message: "Domain added for analysis." });
   } catch (error) {
