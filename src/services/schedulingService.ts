@@ -14,12 +14,12 @@ export const startDomainAnalysisScheduler = () => {
     // Analyze each domain
     for (const domain of domains) {
       try {
-        const analysis = await analyzeDomain(domain.name);
+        const analysis = await analyzeDomain(domain.domainName);
         // Update the domain with the new analysis data
         Object.assign(domain, analysis);
         await domain.save();
       } catch (error) {
-        console.error(`Failed to analyze domain ${domain.name}:`, error);
+        console.error(`Failed to analyze domain ${domain.domainName}:`, error);
       }
     }
 

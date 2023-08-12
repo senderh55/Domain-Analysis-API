@@ -1,13 +1,13 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IDomain extends Document {
-  name: string;
+  domainName: string;
   virusTotalInfo?: object;
   whoisInfo?: object;
 }
 
 const domainSchema: Schema = new Schema({
-  domain: { type: String, required: true },
+  domainName: { type: String, required: true },
   virusTotalInfo: { type: Object, required: false },
   whoisInfo: { type: Object, required: false },
 });

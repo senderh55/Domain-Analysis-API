@@ -14,16 +14,16 @@ const requiresUpdate = (domain: IDomain): boolean => {
 };
 
 async function updateDomainAndSendResponse(
-  domain: string,
+  domainName: string,
   res: Response
 ): Promise<void> {
   try {
-    const updatedAnalysis = await analyzeDomain(domain);
+    const updatedAnalysis = await analyzeDomain(domainName);
     res.status(202).json({
       message:
         "Domain exists, but part of the analysis was missing and is currently being updated. Check back later.",
     });
-    await Domain.updateOne({ domain }, { ...updatedAnalysis });
+    await Domain.updateOne({ domainName }, { ...updatedAnalysis });
   } catch (error) {
     console.error(error);
     res.status(500).send("Failed to analyze domain");
@@ -31,12 +31,12 @@ async function updateDomainAndSendResponse(
 }
 
 async function createNewDomainAndSendResponse(
-  domain: string,
+  domainName: string,
   res: Response
 ): Promise<void> {
   try {
-    const analysis = await analyzeDomain(domain);
-    const newDomain = new Domain({ domain, ...analysis }); // Make sure to include all required fields here
+    const analysis = await analyzeDomain(domainName);
+    const newDomain = new Domain({ domainName, ...analysis }); // Make sure to include all required fields here
     await newDomain.save();
     res
       .status(202)
@@ -48,17 +48,19 @@ async function createNewDomainAndSendResponse(
 }
 
 export const addDomainForAnalysis = async (req: Request, res: Response) => {
-  const { name } = req.body;
+  const { domainName } = req.body;
+  if (!domainName) {
+    return res.status(400).send("Domain name is required");
+  }
   try {
-    const existingDomain = await Domain.findOne({ name });
-    console.log(existingDomain);
+    const existingDomain = await Domain.findOne({ domainName });
     if (existingDomain) {
       return res.json({
-        message: "Domain already exists or is currently being scanned.",
+        message: "Domain already exists",
       });
     }
-    const analysis = await analyzeDomain(name);
-    const newDomain = new Domain({ domain: name, ...analysis });
+    const analysis = await analyzeDomain(domainName);
+    const newDomain = new Domain({ domainName, ...analysis });
     await newDomain.save();
     res.json({ message: "Domain added for analysis." });
   } catch (error) {
@@ -68,15 +70,15 @@ export const addDomainForAnalysis = async (req: Request, res: Response) => {
 };
 
 export const getDomainInfo = async (req: Request, res: Response) => {
-  const domainName = req.params.name;
-  const domain = await Domain.findOne({ domain: domainName });
-  if (!domain) {
+  const { domainName } = req.params;
+  const domainInfo = await Domain.findOne({ domainName });
+  if (!domainInfo) {
     await createNewDomainAndSendResponse(domainName, res);
     return;
   }
-  if (requiresUpdate(domain)) {
+  if (requiresUpdate(domainInfo)) {
     await updateDomainAndSendResponse(domainName, res);
     return;
   }
-  res.json(domain);
+  res.json(domainInfo);
 };
