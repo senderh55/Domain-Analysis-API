@@ -50,18 +50,24 @@ async function createNewDomainAndSendResponse(
 
 export const addDomainForAnalysis = async (req: Request, res: Response) => {
   const { domainName } = req.body;
-  if (!domainName) {
-    return res.status(400).send("Domain name is required");
-  }
+  const validatedDomainName = domainName.replace(/^(https?:\/\/)?(www\.)?/, "");
   try {
-    const existingDomain = await Domain.findOne({ domainName });
-    if (existingDomain) {
+    const domainInfo = await Domain.findOne({
+      domainName: validatedDomainName,
+    });
+    if (domainInfo) {
+      if (domainInfo.status === "pending") {
+        res.status(202).json({
+          message: "Analysis is currently being scanned. Check back later.",
+        });
+        return;
+      }
       return res.json({
         message: "Domain already exists",
       });
     }
-    const analysis = await analyzeDomain(domainName);
-    const newDomain = new Domain({ domainName, ...analysis });
+    const analysis = await analyzeDomain(validatedDomainName);
+    const newDomain = new Domain({ validatedDomainName, ...analysis });
     await newDomain.save();
     res.json({ message: "Domain added for analysis." });
   } catch (error) {
@@ -72,21 +78,20 @@ export const addDomainForAnalysis = async (req: Request, res: Response) => {
 
 export const getDomainInfo = async (req: Request, res: Response) => {
   const { domainName } = req.params;
-  const domainInfo = await Domain.findOne({ domainName });
+  const validatedDomainName = domainName.replace(/^(https?:\/\/)?(www\.)?/, "");
+  const domainInfo = await Domain.findOne({ domainName: validatedDomainName });
   if (!domainInfo) {
-    await createNewDomainAndSendResponse(domainName, res);
+    await createNewDomainAndSendResponse(validatedDomainName, res);
     return;
   }
   if (domainInfo.status === "pending") {
-    res
-      .status(202)
-      .json({
-        message: "Analysis is currently being scanned. Check back later.",
-      });
+    res.status(202).json({
+      message: "Analysis is currently being scanned. Check back later.",
+    });
     return;
   }
   if (requiresUpdate(domainInfo)) {
-    await updateDomainAndSendResponse(domainName, res);
+    await updateDomainAndSendResponse(validatedDomainName, res);
     return;
   }
   res.json(domainInfo);
