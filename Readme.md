@@ -2,27 +2,6 @@
 
 As part of home assigment of Reflectiz, This project implements a system that provides security and identity information about domains. It scans domains in the database at specified intervals to gather information, stores past results for future use, and exposes an asynchronous REST API for interacting with the system.
 
-## Table of Contents
-
-## Table of Contents
-
-- [Description](#description)
-- [Endpoints](#endpoints)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Installation](#installation)
-- - [Clone the Repository](#clone-the-repository)
-  - [Navigate to Project Directory](#navigate-to-project-directory)
-  - [Install Dependencies](#install-dependencies)
-  - [Environment Variables](#environment-variables)
-  - [Start the Application](#start-the-application)
-- - [Docker Setup](#Docker-Setup)
-- [Configuration](#configuration)
-  - [Communication with RabbitMQ](#communication-with-rabbitmq)
-  - [Scheduling Domain Analysis](#scheduling-domain-analysis)
-  - [Analysis Service](#analysis-service)
-  - [Domain Controller](#domain-controller)
-
 ## Description
 
 The system utilizes various APIs to gather information about domains, including information from VirusTotal, WHOIS, and potentially other sources. It provides two main endpoints:
@@ -117,8 +96,6 @@ To set up the system using the traditional approach of cloning the repository, i
    git clone https://github.com/senderh55/reflectiz-home-assignment.git
    ```
 
-```````
-
 2.Navigate to Project Directory: Change your working directory to the cloned project:
 ```cd reflectiz-home-assignment``````
 3.Install Dependencies: Install the required dependencies using npm (Node Package Manager):
@@ -134,11 +111,4 @@ To set up the system using the traditional approach of cloning the repository, i
 ````bash
     npm start
     ```
-
-
-
-
-
-
-
-```````
+````
