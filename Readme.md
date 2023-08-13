@@ -4,11 +4,24 @@ As part of home assigment of Reflectiz, This project implements a system that pr
 
 ## Table of Contents
 
+## Table of Contents
+
 - [Description](#description)
 - [Endpoints](#endpoints)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Installation](#installation)
+- - [Clone the Repository](#clone-the-repository)
+  - [Navigate to Project Directory](#navigate-to-project-directory)
+  - [Install Dependencies](#install-dependencies)
+  - [Environment Variables](#environment-variables)
+  - [Start the Application](#start-the-application)
+- - [Docker Setup](#Docker-Setup)
 - [Configuration](#configuration)
+  - [Communication with RabbitMQ](#communication-with-rabbitmq)
+  - [Scheduling Domain Analysis](#scheduling-domain-analysis)
+  - [Analysis Service](#analysis-service)
+  - [Domain Controller](#domain-controller)
 
 ## Description
 
@@ -61,3 +74,67 @@ The `analysisService.ts` module orchestrates the interaction with external APIs 
 The `domainController.ts` file defines the essential controller functions using the Express.js framework. These functions are pivotal in handling API endpoints, managing domain analysis operations, and facilitating communication with the RabbitMQ queue.
 
 **domainController.ts:** Functions as the core of the system's API handling. It takes charge of adding domains for analysis, retrieving domain information, and orchestrating seamless interactions with the RabbitMQ queue for efficient analysis.
+
+## Environment Variables
+
+The system relies on environment variables to configure its behavior and interact with external services. These variables are stored in a `.env` file at the root of the project and are loaded using the `dotenv` library.
+
+To set up the required environment variables, create a `.env` file and populate it with the necessary values:
+
+````plaintext
+MONGODB_URI=your_mongodb_uri
+RABBITMQ_URL=your_rabbitmq_url
+VIRUS_TOTAL_API_KEY=your_virus_total_api_key
+WHOIS_XML_API_KEY=your_whois_xml_api_key
+ANALYSIS_INTERVAL=your_analysis_interval
+
+## Docker Setup
+
+The system can be containerized using Docker, providing a consistent and isolated environment for running its components. Follow these steps to set up and run the system using Docker:
+
+1. **Install Docker**: If you haven't already, install Docker by following the instructions for your operating system: [Docker Installation Guide](https://docs.docker.com/get-docker/).
+
+2. **Install Docker Compose**: Docker Compose is a tool for defining and running multi-container Docker applications. Install it by following the guide here: [Docker Compose Installation Guide](https://docs.docker.com/compose/install/).
+
+3. **Docker Configuration**: Create a `Dockerfile` for each service/component in your project. This file defines how to build a Docker image for the respective service. Specify the necessary dependencies, environment variables, and commands.
+
+4. **Docker Compose Configuration**: Create a `docker-compose.yml` file in the root of your project. This file defines the services, networks, and volumes for your application. Configure environment variables, port mappings, build contexts, and any dependencies.
+
+5. **Build and Run**: Open a terminal in your project directory and run the following command to build and start the services defined in your `docker-compose.yml`:
+
+   ```bash
+   docker-compose up -d
+
+## Regular Setup
+
+To set up the system using the traditional approach of cloning the repository, installing dependencies, and running the application, follow these steps:
+
+1. **Clone the Repository**: Open a terminal and navigate to the directory where you want to clone the repository. Run the following command to clone the repository:
+
+   ```bash
+   git clone https://github.com/senderh55/reflectiz-home-assignment.git
+````
+
+2.Navigate to Project Directory: Change your working directory to the cloned project:
+```cd reflectiz-home-assignment``````
+3.Install Dependencies: Install the required dependencies using npm (Node Package Manager):
+
+```bash
+   npm install
+```
+
+4.Environment Variables: Create a .env file in the root of the project and provide the necessary environment variables. Refer to the Environment Configuration section for details.
+
+5.Start the Application: Run the application using npm:
+
+````bash
+    npm start
+    ```
+
+
+
+
+
+
+
+````
