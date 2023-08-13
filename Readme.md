@@ -97,7 +97,9 @@ To set up the system using the traditional approach of cloning the repository, i
    ```
 
 2.Navigate to Project Directory: Change your working directory to the cloned project:
-```cd reflectiz-home-assignment``````
+
+`cd reflectiz-home-assignment`
+
 3.Install Dependencies: Install the required dependencies using npm (Node Package Manager):
 
 ```bash
@@ -108,7 +110,6 @@ To set up the system using the traditional approach of cloning the repository, i
 
 5.Start the Application: Run the application using npm:
 
-````bash
+```bash
     npm start
-    ```
-````
+```
