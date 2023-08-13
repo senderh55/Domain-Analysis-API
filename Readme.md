@@ -1,6 +1,6 @@
 # Domain Security and Identity System
 
-This project implements a system that provides security and identity information about domains. It scans domains in the database at specified intervals to gather information, stores past results for future use, and exposes an asynchronous REST API for interacting with the system.
+As part of home assigment of Reflectiz, This project implements a system that provides security and identity information about domains. It scans domains in the database at specified intervals to gather information, stores past results for future use, and exposes an asynchronous REST API for interacting with the system.
 
 ## Table of Contents
 
@@ -9,8 +9,6 @@ This project implements a system that provides security and identity information
 - [Installation](#installation)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Description
 
@@ -38,6 +36,6 @@ The system utilizes various APIs to gather information about domains, including 
   }
   ```
 - **Responses**:
-  - `200 OK`: Returns domain information if available
+  - `200 OK`: Domain already exists
   - `202 Accepted`: Analysis is currently being scanned. Check back later.
   - `500 Internal Server Error`: Failed to process the request
