@@ -1,0 +1,22 @@
+version: "3"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      MONGODB_URI: ${MONGODB_URI}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+      VIRUS_TOTAL_API_KEY: ${VIRUS_TOTAL_API_KEY}
+      WHOIS_XML_API_KEY: ${WHOIS_XML_API_KEY}
+      ANALYSIS_INTERVAL: ${ANALYSIS_INTERVAL}
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    build:
+      context: ./src/rabbitmq
+    ports:
+      - "15672:15672"

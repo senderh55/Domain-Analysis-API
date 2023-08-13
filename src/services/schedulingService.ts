@@ -1,4 +1,4 @@
-import { sendDomainsForAnalysis } from "../utils/rabbitmq";
+import { sendDomainsForAnalysis } from "../rabbitmq/rabbitmq";
 import Domain from "../models/DomainModel";
 
 const schedule = require("node-schedule");

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { analyzeDomain } from "../services/analysisService";
 import Domain, { IDomain } from "../models/DomainModel";
-import { connectToRabbitMQ } from "../utils/rabbitmq";
+import { connectToRabbitMQ } from "../rabbitmq/rabbitmq";
 
 /**
  * Retrieves the keys from the Domain schema for iteration,
