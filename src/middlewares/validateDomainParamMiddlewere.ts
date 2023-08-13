@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { param, validationResult } from "express-validator";
-
+/** validate domain name parameter **/
 export const validateDomainParam = [
   param("domainName").custom((value) => {
     const domain = value.replace(/^(https?:\/\/)?(www\.)?/, "");

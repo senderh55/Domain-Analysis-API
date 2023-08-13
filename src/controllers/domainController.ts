@@ -5,7 +5,7 @@ import { connectToRabbitMQ } from "../utils/rabbitmq";
 
 const getKeysToIterate = (): (keyof IDomain)[] => {
   const domainKeys = Object.keys(Domain.schema.paths) as (keyof IDomain)[];
-  const keysToExclude = ["domain", "_id", "__v"];
+  const keysToExclude = ["domainName", "_id", "__v"];
   return domainKeys.filter((key) => !keysToExclude.includes(key));
 };
 
@@ -109,6 +109,7 @@ export const startConsumer = async () => {
     async (msg: { content: { toString: () => string } }) => {
       if (msg) {
         const { domainName } = JSON.parse(msg.content.toString());
+        console.log(domainName + " is being scanned and analyzed");
         // Set status as 'pending' while analysis is being scanned
         await Domain.updateOne({ domainName }, { status: "pending" });
         const analysis = await analyzeDomain(domainName);

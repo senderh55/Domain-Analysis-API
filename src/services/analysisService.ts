@@ -1,12 +1,13 @@
 import axios from "axios";
 import dotenv from "dotenv";
-
 dotenv.config();
 
+/* APIs are interacted with and data is returned, each API has its own function.
+ To return the data, we use promise.all to wait for all APIs to complete
+ A failed API will return null and won't shut down the system if it returned null*/
 interface DomainAnalysis {
   virusTotalInfo: object | null;
   whoisInfo: object | null;
-  additionalInfo?: object;
 }
 
 const fetchVirusTotalInfo = async (domain: string): Promise<object> => {
@@ -28,7 +29,7 @@ const fetchWhoisInfo = async (domain: string): Promise<object> => {
 
   try {
     const response = await axios.get(url);
-    return response.data.WhoisRecord; // The structure might already match the WhoisInfo interface
+    return response.data.WhoisRecord;
   } catch (error) {
     throw new Error("Failed to fetch Whois info");
   }

@@ -1,6 +1,6 @@
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-import RequestLogModel from "../models/RequestLogModel"; // Adjust path to your Request Log model
+import RequestLogModel from "../models/RequestLogModel";
 
 dotenv.config();
 mongoose.connect(`${process.env.MONGODB_URI}`, { useNewUrlParser: true });

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import axios from "axios";
-
+/** validate the website status before adding it to the database to make sure it's a valid website**/
 export async function websiteStatusMiddleware(
   req: Request,
   res: Response,

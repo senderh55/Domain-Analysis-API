@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { body, validationResult } from "express-validator";
-
+/**  Validate domain name in request body**/
 export const validateDomainBody = [
   body("domainName").custom((value, { req }) => {
     // Remove http https www. if present

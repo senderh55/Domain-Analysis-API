@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import RequestLog from "../models/RequestLogModel";
 
+/** Middleware to log all requests to the database. */
 export const logRequest = (req: Request, res: Response, next: NextFunction) => {
   const log = new RequestLog({
     endpoint: req.originalUrl,
@@ -15,6 +16,6 @@ export const logRequest = (req: Request, res: Response, next: NextFunction) => {
     .then(() => next())
     .catch((err) => {
       console.error("Failed to save request log:", err);
-      next(); // Continue to the next middleware even if logging fails
+      next();
     });
 };
