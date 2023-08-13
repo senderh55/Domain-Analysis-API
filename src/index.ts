@@ -2,16 +2,21 @@ const express = require("express");
 const domainRouter = require("./routes/domainRoute");
 const cors = require("cors");
 import { startConsumer } from "./controllers/domainController";
-
+const rateLimit = require("express-rate-limit");
 const {
   startDomainAnalysisScheduler,
 } = require("./services/schedulingService");
 
 import helmet from "helmet";
-import { limiter } from "./middlewares/rateLimitMiddleware";
 import { logRequest } from "./middlewares/loggingMiddleware";
 
 require("./services/databaseService"); // Database connection
+
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 5, // limit each IP to 5 requests per windowMs
+  message: "Too many requests, please try again later.",
+});
 
 const app = express();
 const port = process.env.PORT || 3000;
