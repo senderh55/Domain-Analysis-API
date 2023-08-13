@@ -3,17 +3,33 @@ import { analyzeDomain } from "../services/analysisService";
 import Domain, { IDomain } from "../models/DomainModel";
 import { connectToRabbitMQ } from "../utils/rabbitmq";
 
+/**
+ * Retrieves the keys from the Domain schema for iteration,
+ * excluding specific keys.
+ * @returns An array of keys to iterate over for domain analysis.
+ */
 const getKeysToIterate = (): (keyof IDomain)[] => {
   const domainKeys = Object.keys(Domain.schema.paths) as (keyof IDomain)[];
   const keysToExclude = ["domainName", "_id", "__v"];
   return domainKeys.filter((key) => !keysToExclude.includes(key));
 };
 
+/**
+ * Checks if a domain object requires an update by iterating over keys
+ * and checking for null values.
+ * @param domain - The domain object to be checked for updates.
+ * @returns True if an update is required, otherwise false.
+ */
 const requiresUpdate = (domain: IDomain): boolean => {
   const keysToIterate = getKeysToIterate();
   return keysToIterate.some((key) => domain[key] === null);
 };
-
+/**
+ *
+ * Updates the domain analysis and sends a response to the client.
+ * @param domainName - The domain name being analyzed.
+ * @param res - The Express response object.
+ */
 async function updateDomainAndSendResponse(
   domainName: string,
   res: Response
@@ -31,6 +47,11 @@ async function updateDomainAndSendResponse(
   }
 }
 
+/**
+ * Creates a new domain entry, performs analysis, and sends a response to the client.
+ * @param domainName - The domain name to be added for analysis.
+ * @param res - The Express response object.
+ */
 async function createNewDomainAndSendResponse(
   domainName: string,
   res: Response
@@ -48,37 +69,55 @@ async function createNewDomainAndSendResponse(
   }
 }
 
+/**
+ * Checks if a domain is currently being scanned by the schedulingService
+ * and sends an appropriate response to the client.
+ * @param domainInfo - The domain information object retrieved from the database.
+ * @param res - The Express response object.
+ */
+const checkIfCurrentlyBeingScanned = (
+  domainInfo: { status: string },
+  res: Response
+) => {
+  if (domainInfo.status === "pending") {
+    return res.status(202).json({
+      message: "Analysis is currently being scanned. Check back later.",
+    });
+  }
+};
+
+/**
+ * Adds a domain for analysis or returns existing analysis information.
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ */
 export const addDomainForAnalysis = async (req: Request, res: Response) => {
   const { domainName } = req.body;
   const validatedDomainName = domainName.replace(/^(https?:\/\/)?(www\.)?/, "");
   try {
+    // Check if domain already exists
     const domainInfo = await Domain.findOne({
       domainName: validatedDomainName,
     });
     if (domainInfo) {
-      if (domainInfo.status === "pending") {
-        res.status(202).json({
-          message: "Analysis is currently being scanned. Check back later.",
-        });
-        return;
-      }
+      checkIfCurrentlyBeingScanned(domainInfo, res);
       return res.json({
         message: "Domain already exists",
       });
     }
-    const analysis = await analyzeDomain(validatedDomainName);
-    const newDomain = new Domain({
-      domainName: validatedDomainName,
-      ...analysis,
-    });
-    await newDomain.save();
-    res.json({ message: "Domain added for analysis." });
+    // New domain - add domain for analysis
+    await createNewDomainAndSendResponse(validatedDomainName, res);
   } catch (error) {
     console.error(error);
     res.status(500).send("Failed to process the request");
   }
 };
 
+/**
+ * Retrieves domain information or triggers analysis if necessary.
+ * @param req - The Express request object.
+ * @param res - The Express response object.
+ */
 export const getDomainInfo = async (req: Request, res: Response) => {
   const { domainName } = req.params;
   const validatedDomainName = domainName.replace(/^(https?:\/\/)?(www\.)?/, "");
@@ -87,12 +126,7 @@ export const getDomainInfo = async (req: Request, res: Response) => {
     await createNewDomainAndSendResponse(validatedDomainName, res);
     return;
   }
-  if (domainInfo.status === "pending") {
-    res.status(202).json({
-      message: "Analysis is currently being scanned. Check back later.",
-    });
-    return;
-  }
+  checkIfCurrentlyBeingScanned(domainInfo, res);
   if (requiresUpdate(domainInfo)) {
     await updateDomainAndSendResponse(validatedDomainName, res);
     return;
@@ -100,6 +134,9 @@ export const getDomainInfo = async (req: Request, res: Response) => {
   res.json(domainInfo);
 };
 
+/**
+ * Starts a RabbitMQ consumer to process domain analysis messages.
+ */
 export const startConsumer = async () => {
   const channel = await connectToRabbitMQ();
   await channel.assertQueue("domain-analysis");

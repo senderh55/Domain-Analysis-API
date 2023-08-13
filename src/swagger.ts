@@ -4,9 +4,9 @@ const options: swaggerJSDoc.Options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Domain analysis Documentation",
+      title: "Domain Analysis Documentation",
       version: "1.0.0",
-      description: "Domain analysis API documentation for Reflectiz",
+      description: "API documentation for domain analysis",
     },
     tags: [
       {
@@ -22,7 +22,15 @@ const options: swaggerJSDoc.Options = {
             domainName: {
               type: "string",
             },
-            // Add more properties as needed
+            virusTotalInfo: {
+              type: "object",
+            },
+            whoisInfo: {
+              type: "object",
+            },
+            status: {
+              type: "string",
+            },
           },
         },
         DomainRequestBody: {
@@ -31,7 +39,6 @@ const options: swaggerJSDoc.Options = {
             domainName: {
               type: "string",
             },
-            // Add more properties as needed
           },
         },
       },
