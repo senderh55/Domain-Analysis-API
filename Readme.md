@@ -81,12 +81,13 @@ The system relies on environment variables to configure its behavior and interac
 
 To set up the required environment variables, create a `.env` file and populate it with the necessary values:
 
-````plaintext
+```plaintext
 MONGODB_URI=your_mongodb_uri
 RABBITMQ_URL=your_rabbitmq_url
 VIRUS_TOTAL_API_KEY=your_virus_total_api_key
 WHOIS_XML_API_KEY=your_whois_xml_api_key
 ANALYSIS_INTERVAL=your_analysis_interval
+```
 
 ## Docker Setup
 
@@ -104,6 +105,7 @@ The system can be containerized using Docker, providing a consistent and isolate
 
    ```bash
    docker-compose up -d
+   ```
 
 ## Regular Setup
 
@@ -113,7 +115,9 @@ To set up the system using the traditional approach of cloning the repository, i
 
    ```bash
    git clone https://github.com/senderh55/reflectiz-home-assignment.git
-````
+   ```
+
+```````
 
 2.Navigate to Project Directory: Change your working directory to the cloned project:
 ```cd reflectiz-home-assignment``````
@@ -137,4 +141,4 @@ To set up the system using the traditional approach of cloning the repository, i
 
 
 
-````
+```````
