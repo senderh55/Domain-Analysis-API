@@ -40,7 +40,7 @@ async function createNewDomainAndSendResponse(
     const newDomain = new Domain({ domainName, ...analysis });
     await newDomain.save();
     res
-      .status(202)
+      .status(200)
       .json({ message: "Domain added for analysis. Check back later." });
   } catch (error) {
     console.error(error);
@@ -109,12 +109,13 @@ export const startConsumer = async () => {
     async (msg: { content: { toString: () => string } }) => {
       if (msg) {
         const { domainName } = JSON.parse(msg.content.toString());
-        await Domain.updateOne({ domainName }, { status: "pending" }); // Set status as 'pending'
+        // Set status as 'pending' while analysis is being scanned
+        await Domain.updateOne({ domainName }, { status: "pending" });
         const analysis = await analyzeDomain(domainName);
         await Domain.updateOne(
           { domainName },
           { ...analysis, status: "completed" }
-        ); // Update status back to 'completed'
+        );
         channel.ack(msg);
       }
     }
